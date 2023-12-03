@@ -8,15 +8,16 @@ import {
 } from "recharts";
 
 export type ChartHistoryData = {
-    time: number
-    txFeeAverage: number
-}[]
+  time: number;
+  txFeeAverage: number;
+}[];
 
 type ChartProps = {
-  data: ChartHistoryData
+  data: ChartHistoryData;
+  precision?: "day" | "hour";
 };
 
-export const Chart = ({ data }: ChartProps) => {
+export const Chart = ({ data, precision = "day" }: ChartProps) => {
   return (
     <ResponsiveContainer>
       <AreaChart
@@ -38,10 +39,12 @@ export const Chart = ({ data }: ChartProps) => {
           dataKey="time"
           name="Time"
           type="number"
-          domain={["auto", "auto"]}
+          domain={[data[0].time, data[data.length - 1].time]}
           tickFormatter={(unixTime) => {
             const date = new Date(unixTime);
-            return `${date.getDate()}/${date.getMonth() + 1}`;
+            return precision === "hour"
+              ? `${date.getHours()}:${date.getMinutes()}`
+              : `${date.getDate()}/${date.getMonth() + 1}`;
           }}
           tickCount={5}
           tickSize={0}
