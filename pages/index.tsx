@@ -1,5 +1,5 @@
 import { Chart } from "@/components/Chart";
-import { mockOwlApi } from "@/data/mock";
+import { mockOwlApiWeek } from "@/data/mock";
 import { OwlApiResponseType } from "@/data/types";
 
 type HomeProps = {
@@ -13,8 +13,9 @@ export default function Home({ data }: HomeProps) {
   return (
     <main>
       <div className="flex flex-col items-center gap-10 justify-center mt-10">
-        <h1 className="text-5xl font-extra-bold">Ethereum transaction fee history</h1>
-        <h2 className="text-lg text-gray-400">The average cost of a transfaction over time</h2>
+        <h1 className="text-5xl font-black text-stone-50">
+          Ethereum transaction fee history
+        </h1>
         <div className="w-[800px] h-[400px] mx-auto">
           <Chart data={data} />
         </div>
@@ -24,10 +25,11 @@ export default function Home({ data }: HomeProps) {
 }
 
 const processData = (data: OwlApiResponseType) => {
+  console.log(data);
   const chartData = data.candles
-    .slice(0, 24) // only get 24 hours candles
+    .slice(0, 30)
     .map((d) => ({
-      name: d.timestamp,
+      name: new Date(d.timestamp).getTime(),
       txfee: d.txFee.low + d.txFee.high / 2,
     }))
     .reverse();
@@ -35,17 +37,17 @@ const processData = (data: OwlApiResponseType) => {
 };
 
 export const getServerSideProps = async () => {
-  const key = process.env.API_KEY;
-  const aDayAgoTimeStamp = new Date().getTime() - 24 * 60 * 60 * 1000;
-  // TODO: uncomment this when api is fixed
-  /*const res = await fetch(
-    `https://api.owlracle.info/v4/eth/history?apikey=${key}&txfee=true&timeframe=60&from=${aDayAgoTimeStamp}`
+  /*const key = process.env.API_KEY;
+  const threeMonthAgoTimeStamp = new Date().getTime() - 7 * 24 * 60 * 60 * 1000;
+  const res = await fetch(
+    `https://api.owlracle.info/v4/eth/history?apikey=${key}&txfee=true&timeframe=1440&from=${threeMonthAgoTimeStamp}`
   );
   const data = await res.json();*/
-  const data = processData(mockOwlApi);
+  const data = mockOwlApiWeek;
   return {
     props: {
-      data,
+      data: processData(data),
+      data2: data,
     },
   };
 };
