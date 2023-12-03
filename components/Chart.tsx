@@ -7,11 +7,13 @@ import {
   YAxis,
 } from "recharts";
 
-export type ChartProps = {
-  data: {
-    name: string;
-    txfee: number;
-  }[];
+export type ChartHistoryData = {
+    time: number
+    txFeeAverage: number
+}[]
+
+type ChartProps = {
+  data: ChartHistoryData
 };
 
 export const Chart = ({ data }: ChartProps) => {
@@ -33,7 +35,7 @@ export const Chart = ({ data }: ChartProps) => {
           </linearGradient>
         </defs>
         <XAxis
-          dataKey="name"
+          dataKey="time"
           name="Time"
           type="number"
           domain={["auto", "auto"]}
@@ -48,7 +50,7 @@ export const Chart = ({ data }: ChartProps) => {
           strokeWidth={0.5}
         />
         <YAxis
-          dataKey="txfee"
+          dataKey="txFeeAverage"
           name="Price"
           label={{
             value: "Transaction Cost (USD)",
@@ -64,7 +66,6 @@ export const Chart = ({ data }: ChartProps) => {
         <Tooltip
           labelFormatter={(unixTimestamp) => {
             const date = new Date(unixTimestamp);
-            // hour minutes and day and month
             return `${date.getHours()}:${date.getMinutes()} ${date.getDate()}/${
               date.getMonth() + 1
             }`;
@@ -73,7 +74,7 @@ export const Chart = ({ data }: ChartProps) => {
         />
         <Area
           type="monotone"
-          dataKey="txfee"
+          dataKey="txFeeAverage"
           dot={false}
           stroke="#1e40af"
           fillOpacity={1}
