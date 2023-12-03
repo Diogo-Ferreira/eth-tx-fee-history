@@ -18,10 +18,8 @@ export type ChartProps = {
 
 export const Chart = ({ data }: ChartProps) => {
   return (
-    <ResponsiveContainer width="100%" height="100%">
+    <ResponsiveContainer>
       <LineChart
-        width={500}
-        height={300}
         data={data}
         margin={{
           top: 5,
@@ -30,10 +28,17 @@ export const Chart = ({ data }: ChartProps) => {
           bottom: 5,
         }}
       >
-        <XAxis dataKey="name" />
-        <YAxis />
+        <XAxis
+          dataKey="name"
+          name="Time"
+          tickFormatter={(unixTime) => {
+            const date = new Date(unixTime);
+            return `${date.getHours()}:${date.getMinutes()} ${date.getDate()}/${date.getMonth()}`;
+          }}
+        />
+        <YAxis dataKey="txfee" name="Price" />
         <Tooltip />
-        <Line type="monotone" dot={false} dataKey="txfee" stroke="#82ca9d" />
+        <Line type="monotone" dot={false} dataKey="txfee" stroke="#2563eb" />
       </LineChart>
     </ResponsiveContainer>
   );
