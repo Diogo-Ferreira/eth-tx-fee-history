@@ -35,10 +35,13 @@ export const Chart = ({ data }: ChartProps) => {
         <XAxis
           dataKey="name"
           name="Time"
+          type="number"
+          domain={["auto", "auto"]}
           tickFormatter={(unixTime) => {
             const date = new Date(unixTime);
             return `${date.getDate()}/${date.getMonth() + 1}`;
           }}
+          tickCount={5}
           tickSize={0}
           tickMargin={12}
           stroke="white"
@@ -55,6 +58,8 @@ export const Chart = ({ data }: ChartProps) => {
           }}
           stroke="white"
           strokeWidth={0.5}
+          tickSize={0}
+          tickMargin={12}
         />
         <Tooltip
           labelFormatter={(unixTimestamp) => {
