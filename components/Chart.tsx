@@ -39,7 +39,7 @@ export const Chart = ({ data, precision = "day" }: ChartProps) => {
           dataKey="time"
           name="Time"
           type="number"
-          domain={[data[0].time, data[data.length - 1].time]}
+          domain={['auto', 'auto']}
           tickFormatter={(unixTime) => {
             const date = new Date(unixTime);
             return precision === "hour"

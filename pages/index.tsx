@@ -17,7 +17,7 @@ export default function Home({ data, time }: HomeProps) {
         </h1>
         <div className="flex gap-4">
           <FilterButton href="/?time=day" active={time === "day"}>
-            Today
+            24 hours
           </FilterButton>
           <FilterButton href="/?time=week" active={time === "week"}>
             7 days
@@ -35,10 +35,10 @@ export default function Home({ data, time }: HomeProps) {
 }
 
 export const getServerSideProps = async (context: NextPageContext) => {
-  const { days, timeframe, candles } = mapTimeToDays(
+  const { days, timeFrame, candles } = mapTimeToDays(
     context.query.time as string
   );
-  const data = await fetchHistoryData(days, timeframe, candles);
+  const data = await fetchHistoryData(days, timeFrame, candles);
   return {
     props: {
       data,
