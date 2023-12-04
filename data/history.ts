@@ -1,12 +1,8 @@
 import { ChartHistoryData } from "@/components/Chart";
 import { OwlApiResponseType } from "./types";
 
-const formatData = (
-  data: OwlApiResponseType,
-  count: number
-): ChartHistoryData =>
+const formatData = (data: OwlApiResponseType): ChartHistoryData =>
   data.candles
-    .slice(0, count)
     .map((d) => ({
       time: new Date(d.timestamp).getTime(),
       txFeeAverage:
@@ -25,7 +21,7 @@ export const fetchHistoryData = async (
     `https://api.owlracle.info/v4/eth/history?apikey=${key}&txfee=true&timeframe=${timeFrame}&candles=${candles}&from=${fromTimeStamp}`
   );
   const data = await res.json();
-  return formatData(data, candles);
+  return formatData(data);
 };
 
 export const mapTimeToDays = (time: string) => {
