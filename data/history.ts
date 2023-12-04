@@ -1,9 +1,12 @@
 import { ChartHistoryData } from "@/components/Chart";
-import { mockOwlApiWeek } from "./mock";
 import { OwlApiResponseType } from "./types";
 
-const formatData = (data: OwlApiResponseType): ChartHistoryData =>
+const formatData = (
+  data: OwlApiResponseType,
+  count: number
+): ChartHistoryData =>
   data.candles
+    .slice(0, count)
     .map((d) => ({
       time: new Date(d.timestamp).getTime(),
       txFeeAverage:
@@ -11,15 +14,46 @@ const formatData = (data: OwlApiResponseType): ChartHistoryData =>
     }))
     .reverse();
 
-export const fetchHistoryData = async () => {
-  // we have mocking data because of api rate limit
-  if (process.env.MOCK_DATA === "true") return formatData(mockOwlApiWeek);
-
+export const fetchHistoryData = async (
+  days: number,
+  timeFrame: number,
+  candles: number
+) => {
   const key = process.env.API_KEY;
-  const aWeekAgoTimeStamp = new Date().getTime() - 7 * 24 * 60 * 60 * 1000;
+  const fromTimeStamp = new Date().getTime() - days * 24 * 60 * 60 * 1000;
   const res = await fetch(
-    `https://api.owlracle.info/v4/eth/history?apikey=${key}&txfee=true&timeframe=1440&candles=7&from=${aWeekAgoTimeStamp}`
+    `https://api.owlracle.info/v4/eth/history?apikey=${key}&txfee=true&timeframe=${timeFrame}&candles=${candles}&from=${fromTimeStamp}`
   );
   const data = await res.json();
-  return formatData(data);
+  return formatData(data, candles);
+};
+
+export const mapTimeToDays = (time: string) => {
+  switch (time) {
+    case "day": {
+      return {
+        days: 1,
+        timeFrame: 60,
+        candles: 24,
+      };
+    }
+    case "week":
+      return {
+        days: 7,
+        timeFrame: 1440,
+        candles: 7,
+      };
+    case "month":
+      return {
+        days: 30,
+        timeFrame: 1440,
+        candles: 30,
+      };
+    default:
+      return {
+        days: 7,
+        timeFrame: 1440,
+        candles: 7,
+      };
+  }
 };

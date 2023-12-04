@@ -6,17 +6,23 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { format } from "date-fns";
 
 export type ChartHistoryData = {
-    time: number
-    txFeeAverage: number
-}[]
+  time: number;
+  txFeeAverage: number;
+}[];
 
 type ChartProps = {
-  data: ChartHistoryData
+  data: ChartHistoryData;
+  precision?: "day" | "hour";
 };
 
-export const Chart = ({ data }: ChartProps) => {
+const buildDateFormater =
+  (precision: "day" | "hour") => (unixTimestamp: number) =>
+    format(new Date(unixTimestamp), precision === "hour" ? "HH:mm" : "d MMM");
+
+export const Chart = ({ data, precision = "day" }: ChartProps) => {
   return (
     <ResponsiveContainer>
       <AreaChart
@@ -39,10 +45,7 @@ export const Chart = ({ data }: ChartProps) => {
           name="Time"
           type="number"
           domain={["auto", "auto"]}
-          tickFormatter={(unixTime) => {
-            const date = new Date(unixTime);
-            return `${date.getDate()}/${date.getMonth() + 1}`;
-          }}
+          tickFormatter={buildDateFormater(precision)}
           tickCount={5}
           tickSize={0}
           tickMargin={12}
@@ -52,24 +55,13 @@ export const Chart = ({ data }: ChartProps) => {
         <YAxis
           dataKey="txFeeAverage"
           name="Price"
-          label={{
-            value: "Transaction Cost (USD)",
-            angle: -90,
-            position: "insideLeft",
-            stroke: "white",
-          }}
           stroke="white"
           strokeWidth={0.5}
           tickSize={0}
           tickMargin={12}
         />
         <Tooltip
-          labelFormatter={(unixTimestamp) => {
-            const date = new Date(unixTimestamp);
-            return `${date.getHours()}:${date.getMinutes()} ${date.getDate()}/${
-              date.getMonth() + 1
-            }`;
-          }}
+          labelFormatter={buildDateFormater(precision)}
           formatter={(v) => `${Number(v).toFixed(2)} USD`}
         />
         <Area
