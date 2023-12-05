@@ -19,8 +19,15 @@ type ChartProps = {
 };
 
 const buildDateFormater =
-  (precision: "day" | "hour") => (unixTimestamp: number) =>
-    format(new Date(unixTimestamp), precision === "hour" ? "HH:mm" : "d MMM");
+  (precision: "day" | "hour" | "full") => (unixTimestamp: number) =>
+    format(
+      new Date(unixTimestamp),
+      precision === "hour"
+        ? "HH:mm"
+        : precision === "day"
+        ? "d MMM"
+        : "d MMM HH:mm"
+    );
 
 export const Chart = ({ data, precision = "day" }: ChartProps) => {
   return (
@@ -36,15 +43,15 @@ export const Chart = ({ data, precision = "day" }: ChartProps) => {
       >
         <defs>
           <linearGradient id="colorTxFee" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="#1e40af" stopOpacity={0.4} />
-            <stop offset="95%" stopColor="#1e40af" stopOpacity={0} />
+            <stop offset="5%" stopColor="#f8fafc" stopOpacity={0.4} />
+            <stop offset="95%" stopColor="#f8fafc" stopOpacity={0} />
           </linearGradient>
         </defs>
         <XAxis
           dataKey="time"
           name="Time"
           type="number"
-          domain={["auto", "auto"]}
+          domain={[data[0].time, data[data.length - 1].time]}
           tickFormatter={buildDateFormater(precision)}
           tickCount={5}
           tickSize={0}
@@ -59,16 +66,31 @@ export const Chart = ({ data, precision = "day" }: ChartProps) => {
           strokeWidth={0.5}
           tickSize={0}
           tickMargin={12}
+          label={{
+            value: "Avg Tx fee paid (USD)",
+            stroke: "white",
+            fill: "white",
+            angle: -90,
+            position: "insideLeft",
+          }}
         />
         <Tooltip
-          labelFormatter={buildDateFormater(precision)}
+          labelFormatter={buildDateFormater(
+            precision === "hour" ? "full" : "day"
+          )}
           formatter={(v) => `${Number(v).toFixed(2)} USD`}
+          contentStyle={{
+            background: "#020617",
+          }}
+          labelStyle={{
+            color: "#ffffff",
+          }}
         />
         <Area
           type="monotone"
           dataKey="txFeeAverage"
           dot={false}
-          stroke="#1e40af"
+          stroke="#f8fafc"
           fillOpacity={1}
           fill="url(#colorTxFee)"
         />
