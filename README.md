@@ -21,3 +21,4 @@ npm run dev
 
 * Custom date range
 * Api calls to Owlracle API may be slow sometimes or depending the range, moving the call to the client may improve user experience
+* Improve X axis interval and domain
