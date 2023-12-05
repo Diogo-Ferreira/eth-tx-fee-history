@@ -47,9 +47,9 @@ export const mapTimeToDays = (time: string) => {
       };
     default:
       return {
-        days: 7,
-        timeFrame: 1440,
-        candles: 7,
+        days: 1,
+        timeFrame: 60,
+        candles: 24,
       };
   }
 };
