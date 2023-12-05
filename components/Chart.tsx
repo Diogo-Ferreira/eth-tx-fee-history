@@ -51,7 +51,7 @@ export const Chart = ({ data, precision = "day" }: ChartProps) => {
           dataKey="time"
           name="Time"
           type="number"
-          domain={[data[0].time, data[data.length - 1].time]}
+          domain={["auto", "auto"]}
           tickFormatter={buildDateFormater(precision)}
           tickCount={5}
           tickSize={0}
