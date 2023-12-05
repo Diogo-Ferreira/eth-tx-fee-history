@@ -1,6 +1,7 @@
 import {
   Area,
   AreaChart,
+  CartesianGrid,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -53,8 +54,7 @@ export const Chart = ({ data, precision = "day" }: ChartProps) => {
           type="number"
           domain={["auto", "auto"]}
           tickFormatter={buildDateFormater(precision)}
-          tickCount={5}
-          tickSize={0}
+          tickSize={5}
           tickMargin={12}
           stroke="white"
           strokeWidth={0.5}
@@ -74,6 +74,8 @@ export const Chart = ({ data, precision = "day" }: ChartProps) => {
             position: "insideLeft",
           }}
         />
+
+        <CartesianGrid stroke="#f8fafc" vertical={false} opacity={0.2} />
         <Tooltip
           labelFormatter={buildDateFormater(
             precision === "hour" ? "full" : "day"
@@ -86,6 +88,7 @@ export const Chart = ({ data, precision = "day" }: ChartProps) => {
             color: "#ffffff",
           }}
         />
+
         <Area
           type="monotone"
           dataKey="txFeeAverage"
